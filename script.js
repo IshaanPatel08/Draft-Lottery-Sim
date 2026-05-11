@@ -365,13 +365,13 @@ const TEAMS = [
     const tbody = document.getElementById('trade-tbody');
     tbody.innerHTML = `
       <tr>
-        <td><strong>${TEAMS[a].abbr}</strong> 2024 pick (seed ${TEAMS[a].seed})</td>
+        <td><strong>${TEAMS[a].abbr}</strong> 2026 pick (seed ${TEAMS[a].seed})</td>
         <td>#${Math.round(evA)}</td><td>${top3A}%</td>
         <td>${evA.toFixed(2)}</td>
         <td>${evA <= evB ? '<span class="over">✓ Better value</span>' : '—'}</td>
       </tr>
       <tr>
-        <td><strong>${TEAMS[b].abbr}</strong> 2024 pick (seed ${TEAMS[b].seed})</td>
+        <td><strong>${TEAMS[b].abbr}</strong> 2026 pick (seed ${TEAMS[b].seed})</td>
         <td>#${Math.round(evB)}</td><td>${top3B}%</td>
         <td>${evB.toFixed(2)}</td>
         <td>${evB < evA ? '<span class="over">✓ Better value</span>' : '—'}</td>
@@ -411,7 +411,7 @@ const TEAMS = [
   
   function updateEra() {
     const v = document.getElementById('year-select').value;
-    const eraMap = { '2024': '2019', '2019': '2019', 'pre2019': 'pre2019' };
+    const eraMap = { '2026': '2019', '2019': '2019', 'pre2019': 'pre2019' };
     currentEraKey = eraMap[v] || '2019';
     currentOdds = ODDS[currentEraKey];
     buildTeamsGrid();
