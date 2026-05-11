@@ -1,19 +1,21 @@
 const TEAMS = [
-    { city:'Atlanta',      name:'Hawks',        abbr:'ATL',  color:'#E03A3E', wins:36, losses:46, seed:1  },
-    { city:'Washington',   name:'Wizards',      abbr:'WAS',  color:'#002B5C', wins:15, losses:67, seed:2  },
-    { city:'Charlotte',    name:'Hornets',      abbr:'CHA',  color:'#00788C', wins:21, losses:61, seed:3  },
-    { city:'Portland',     name:'Trail Blazers',abbr:'POR',  color:'#E03A3E', wins:21, losses:61, seed:4  },
-    { city:'San Antonio',  name:'Spurs',        abbr:'SAS',  color:'#C4CED4', wins:22, losses:60, seed:5  },
-    { city:'Detroit',      name:'Pistons',      abbr:'DET',  color:'#C8102E', wins:14, losses:68, seed:6  },
-    { city:'Memphis',      name:'Grizzlies',    abbr:'MEM',  color:'#5D76A9', wins:27, losses:55, seed:7  },
-    { city:'Utah',         name:'Jazz',         abbr:'UTA',  color:'#002B5C', wins:31, losses:51, seed:8  },
-    { city:'Toronto',      name:'Raptors',      abbr:'TOR',  color:'#CE1141', wins:25, losses:57, seed:9  },
-    { city:'Chicago',      name:'Bulls',        abbr:'CHI',  color:'#CE1141', wins:39, losses:43, seed:10 },
-    { city:'OKC (via)',    name:'Thunder',      abbr:'OKC',  color:'#007AC1', wins:57, losses:25, seed:11 },
-    { city:'Houston',      name:'Rockets',      abbr:'HOU',  color:'#CE1141', wins:41, losses:41, seed:12 },
-    { city:'Utah (via)',   name:'Jazz II',      abbr:'UTA2', color:'#002B5C', wins:31, losses:51, seed:13 },
-    { city:'Portland (via)',name:'Blazers II',  abbr:'POR2', color:'#E03A3E', wins:21, losses:61, seed:14 },
+    { city:'Washington', name:'Wizards', abbr:'WAS', color:'#002B5C', wins:17, losses:65, seed:1 },
+    { city:'Indiana', name:'Pacers', abbr:'IND', color:'#fcdb03', wins:19, losses:63, seed:2 },
+    { city:'Brooklyn',    name:'Nets',      abbr:'BKN',  color:'#f7f4ed', wins:20, losses:62, seed:3  },
+    { city:'Utah',         name:'Jazz',         abbr:'UTA',  color:'#002B5C', wins:22, losses:60, seed:4  },
+    { city:'Sacramento',  name:'Kings',        abbr:'SAC',  color:'#8200fc', wins:22, losses:60, seed:5  },
+    { city:'Memphis',      name:'Grizzlies',    abbr:'MEM',  color:'#5D76A9', wins:25, losses:57, seed:6  },
+    { city:'Atlanta',      name:'Hawks (via NOP)',        abbr:'ATL',  color:'#E03A3E', wins:26, losses:56, seed:7  },
+    { city:'Dallas',         name:'Mavericks',         abbr:'DAL',  color:'#0076fc', wins:26, losses:56, seed:8  },
+    { city:'Chicago',      name:'Bulls',        abbr:'CHI',  color:'#CE1141', wins:31, losses:51, seed:9  },
+    { city:'Milwaukee',      name:'Bucks',        abbr:'MIL',  color:'#03a116', wins:32, losses:50, seed:10 },
+    { city:'Golden State',    name:'Warriors',      abbr:'GS',  color:'#0437de', wins:37, losses:45, seed:11 },
+    { city:'OKC',    name:'Thunder (via LAC)',      abbr:'OKC',  color:'#007AC1', wins:42, losses:40, seed:12 },
+    { city:'Miami',   name:'Heat',      abbr:'MIA', color:'#ce1111', wins:43, losses:39, seed:13 },
+    { city:'Charlotte',    name:'Hornets',      abbr:'CHA',  color:'#00788C', wins:44, losses:38, seed:14 },
   ];
+
+
   
   // Odds arrays: index = lottery seed (0 = worst team)
   const ODDS = {
