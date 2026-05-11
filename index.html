@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NBA Draft Lottery Simulator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <div class="hero">
+    <h1>🏀 NBA Draft Lottery Simulator</h1>
+    <p>Probabilistic simulation engine · Monte Carlo analysis · CBA rule sets · Trade value calculator</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><label>Simulations run</label><span id="total-sims">0</span></div>
+      <div class="hero-stat"><label>Lottery era</label><span id="current-era">2019–Now</span></div>
+      <div class="hero-stat"><label>Top-pick odds leader</label><span id="odds-leader">—</span></div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('sim',this)">Simulator</button>
+    <button class="tab" onclick="switchTab('monte',this)">Monte Carlo</button>
+    <button class="tab" onclick="switchTab('history',this)">Analytics</button>
+    <button class="tab" onclick="switchTab('trade',this)">Trade Sim</button>
+    <button class="tab" onclick="switchTab('cba',this)">CBA Rules</button>
+  </div>
+
+  <div id="tab-sim" class="section active">
+    <div class="section-title">2024 Draft Lottery Teams</div>
+    <div class="teams-grid" id="teams-grid"></div>
+
+    <div class="run-area">
+      <div class="run-controls">
+        <label>Lottery era:</label>
+        <select id="year-select" onchange="updateEra()">
+          <option value="2024">2024 (Current)</option>
+          <option value="2019">2019 Rules</option>
+          <option value="pre2019">Pre-2019 Rules</option>
+        </select>
+        <button class="btn-run" onclick="runOneLottery()">🎱 Run Lottery</button>
+      </div>
+      <div class="lottery-results" id="lottery-results">
+        <div class="section-title" style="margin-top:1rem">Drawing results</div>
+        <div class="ball-container" id="ball-container"></div>
+        <div class="picks-grid" id="picks-grid"></div>
+      </div>
+    </div>
+
+    <div class="section-title">Top-1 pick odds by team</div>
+    <div class="prob-bar-list" id="odds-bars"></div>
+  </div>
+
+  <div id="tab-monte" class="section">
+    <div class="stat-cards" id="mc-stats" style="display:none">
+      <div class="stat-card"><div class="stat-card-val" id="mc-sims">—</div><div class="stat-card-label">Simulations</div></div>
+      <div class="stat-card"><div class="stat-card-val" id="mc-top1">—</div><div class="stat-card-label">Actual #1 prob</div></div>
+      <div class="stat-card"><div class="stat-card-val" id="mc-ev">—</div><div class="stat-card-label">Expected pick (focus team)</div></div>
+    </div>
+
+    <div class="run-area">
+      <div class="run-controls">
+        <label>Simulations:</label>
+        <select id="sim-count">
+          <option value="10000">10,000</option>
+          <option value="100000" selected>100,000</option>
+          <option value="500000">500,000</option>
+        </select>
+        <label>Focus team:</label>
+        <select id="mc-team-focus" style="flex:1"></select>
+        <button class="btn-sim" onclick="runMonteCarlo()">📊 Run Monte Carlo</button>
+      </div>
+      <div class="progress-bar" id="mc-progress-wrap" style="display:none">
+        <div class="progress-fill" id="mc-progress"></div>
+      </div>
+    </div>
+
+    <div id="mc-results" style="display:none">
+      <div class="section-title">Simulated pick distribution — focus team</div>
+      <div class="chart-wrap" style="height:220px;margin-bottom:1.25rem">
+        <canvas id="mc-chart" role="img" aria-label="Monte Carlo pick distribution bar chart for selected team"></canvas>
+      </div>
+      <div class="section-title">All teams — expected pick value (lower = better)</div>
+      <div class="prob-bar-list" id="ev-bars"></div>
+    </div>
+  </div>
+
+  <div id="tab-history" class="section">
+    <div class="section-title">Historical over/underperformance (2010–2024)</div>
+    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:1rem">Expected #1 picks based on entry odds vs actual lottery results.</p>
+    <div id="history-rows"></div>
+
+    <div class="section-title" style="margin-top:1.5rem">Does tanking work? Simulation verdict</div>
+    <div class="stat-cards">
+      <div class="stat-card">
+        <div class="stat-card-val" style="color:#16a34a">+2.1</div>
+        <div class="stat-card-label">Pick positions gained (worst vs 5th seed, avg)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-val" style="color:#dc2626">14%</div>
+        <div class="stat-card-label">Chance worst team gets #1 (2019 era)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card-val">3.2×</div>
+        <div class="stat-card-label">Better #1 odds vs 8th seed</div>
+      </div>
+    </div>
+    <div class="info-box">
+      <strong>Verdict:</strong> Tanking provides a statistically meaningful but not deterministic advantage. The 2019 CBA reform reduced the worst team's top-pick odds from 25% to 14%, cutting tanking incentive by ~44%. Expected pick improvement from tanking is real but modest — and comes with roster development costs that often outweigh the draft benefit over a multi-year window.
+    </div>
+
+    <div class="section-title" style="margin-top:1.25rem">Lottery reform impact on competitive parity</div>
+    <div class="chart-wrap" style="height:200px">
+      <canvas id="parity-chart" role="img" aria-label="Line chart showing Gini coefficient of pick concentration across lottery eras, declining after 2019 reform"></canvas>
+    </div>
+  </div>
+
+  <div id="tab-trade" class="section">
+    <div class="section-title">Draft pick trade value calculator</div>
+    <p style="font-size:12px;color:var(--text-secondary);margin-bottom:1rem">Compare expected lottery value of two teams' picks based on current odds and simulated outcomes.</p>
+    <div class="trade-area">
+      <div class="trade-row">
+        <label>Team A:</label>
+        <select id="trade-team-a"></select>
+      </div>
+      <div class="trade-row">
+        <label>Team B:</label>
+        <select id="trade-team-b"></select>
+      </div>
+      <button class="btn-run" onclick="analyzeTrade()">Analyze Trade</button>
+    </div>
+
+    <div id="trade-result" style="display:none">
+      <div class="section-title">Trade value breakdown</div>
+      <table class="ev-table">
+        <thead><tr><th>Pick</th><th>Median slot</th><th>Top-3 prob</th><th>Expected value</th><th>Verdict</th></tr></thead>
+        <tbody id="trade-tbody"></tbody>
+      </table>
+      <div class="info-box" id="trade-verdict" style="margin-top:0.75rem"></div>
+    </div>
+  </div>
+
+  <div id="tab-cba" class="section">
+    <div class="section-title">CBA lottery rule sets</div>
+    <div class="cba-cards" id="cba-cards">
+      <div class="cba-card active" onclick="selectCBA(this,'2019')">
+        <h3>2019 Reform (Current)</h3>
+        <p>Top-3 odds: 14/14/14% for three worst teams. Flattened odds to discourage tanking. Still in effect today.</p>
+      </div>
+      <div class="cba-card" onclick="selectCBA(this,'pre2019')">
+        <h3>Pre-2019 Classic</h3>
+        <p>Worst team: 25% chance at #1. Heavy incentive to lose. Drove the "Process" tanking era in Philadelphia.</p>
+      </div>
+      <div class="cba-card" onclick="selectCBA(this,'1985')">
+        <h3>1985 Inaugural</h3>
+        <p>Pure equal-odds lottery. No weighting by record. Every non-playoff team had an identical shot.</p>
+      </div>
+      <div class="cba-card" onclick="selectCBA(this,'whatif')">
+        <h3>What-if: Pure Tank</h3>
+        <p>Hypothetical: worst team gets 50% top-pick odds. Extreme tanking incentive scenario for analysis.</p>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-top:1.5rem">Pick #1 probability by lottery seed — era comparison</div>
+    <div class="legend-row" id="cba-legend"></div>
+    <div class="chart-wrap" style="height:240px">
+      <canvas id="cba-chart" role="img" aria-label="Bar chart comparing #1 pick probability across four CBA lottery rule eras"></canvas>
+    </div>
+    <div class="info-box" id="cba-analysis" style="margin-top:1rem"></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
+
+
+
+
